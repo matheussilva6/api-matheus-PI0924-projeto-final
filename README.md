@@ -149,4 +149,4 @@ Antes de testar os restantes endpoints, é necessário executar o pedido de logi
 
 Matheus Silva
 
-Projeto desenvolvido para avaliação da UFCD PI0924.
+Projeto desenvolvido para avaliação da UFCD 10792 com o formador Dario Quental.
