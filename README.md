@@ -1,83 +1,152 @@
-# ApiMatheusProjetoFinal
+# API Matheus - Projeto Final PI0924
 
-Projeto Final: API REST em .NET 8 (ASP.NET Core Web API) com JWT, Swagger, cache e resiliência (Polly) e um serviço *imposter* (Mountebank) que simula sistemas externos de inventário e pagamentos.
+## Sobre o projeto
 
-## Arquitetura
+Este projeto foi desenvolvido para o Projeto Final da UFCD PI0924.
 
-- **Backend:** ASP.NET Core Web API (.NET 8)
-- **Autenticação:** JWT (JSON Web Tokens)
-- **Documentação:** Swagger / Swashbuckle
-- **Cache e resiliência:** Polly (retry + circuit breaker) + Redis (`IDistributedCache`)
-- **Mock externo (imposter):** Mountebank
+O objetivo foi criar uma API REST em ASP.NET Core (.NET 8), permitindo gerir utilizadores e produtos, utilizando autenticação JWT, documentação com Swagger e integração com um serviço externo simulado através do Mountebank (Imposter).
 
-## Estrutura
+Além disso, foram implementados mecanismos de cache com Redis e políticas de resiliência com Polly para melhorar o desempenho e o tratamento de falhas.
+
+---
+
+## Tecnologias utilizadas
+
+- ASP.NET Core (.NET 8)
+- JWT
+- Swagger
+- Redis
+- Polly
+- Mountebank (Imposter)
+- Docker
+- Postman
+
+---
+
+## Estrutura do projeto
 
 ```
-├── ApiMatheusProjetoFinal/
-│   ├── Controllers/       # Auth, Users, Products, Imposter
-│   ├── Models/
-│   ├── Services/          # ImposterService (HttpClient + Polly)
-│   ├── Resilience/        # Políticas Polly (retry, circuit breaker)
-│   └── imposter/          # Configuração do Mountebank
+ApiMatheusProjetoFinal/
+│
+├── Controllers
+├── Models
+├── Services
+├── Resilience
+├── imposter
+│
 ├── Dockerfile
 ├── docker-compose.yml
+├── README.md
 └── ApiMatheusProjetoFinal.postman_collection.json
 ```
 
-## Como correr localmente (sem Docker)
+---
 
-1. Arrancar o imposter (Mountebank) na porta `4545`:
-   ```bash
-   mb start --configfile ApiMatheusProjetoFinal/imposter/imposter.json
-   ```
-2. Arrancar a API:
-   ```bash
-   cd ApiMatheusProjetoFinal
-   dotnet run
-   ```
-3. Abrir o Swagger em `https://localhost:7072/swagger`
+## Executar o projeto
 
-## Como correr com Docker
+### Sem Docker
+
+1. Iniciar o Mountebank.
+
+```bash
+mb start --configfile ApiMatheusProjetoFinal/imposter/imposter.json
+```
+
+2. Executar a API.
+
+```bash
+cd ApiMatheusProjetoFinal
+dotnet run
+```
+
+3. Abrir o Swagger.
+
+```
+https://localhost:7072/swagger
+```
+
+---
+
+### Com Docker
+
+Executar:
 
 ```bash
 docker compose up --build
 ```
 
-Isto sobe três containers:
-- **api** — a API .NET 8, disponível em `http://localhost:8080`
-- **imposter** — o Mountebank, disponível em `http://localhost:4545` (mocks) e `http://localhost:2525` (admin)
-- **redis** — cache Redis, disponível em `localhost:6379`
+Serão iniciados três serviços:
 
-Para correr localmente sem Docker, precisas também de um Redis a correr em `localhost:6379` (ex.: `docker run -p 6379:6379 redis:7-alpine`).
+- API
+- Redis
+- Mountebank
 
-## Autenticação
+---
+
+## Login
+
+Para obter um token JWT utiliza:
 
 ```
 POST /api/auth/login
+```
+
+```json
 {
   "username": "matheus",
   "password": "12345"
 }
 ```
 
-Devolve um token JWT a usar no header `Authorization: Bearer <token>` nos restantes endpoints.
+O token devolvido deve ser utilizado no Swagger ou no Postman através do cabeçalho:
 
-## Endpoints principais
+```
+Authorization: Bearer <token>
+```
 
-| Método | Rota | Descrição |
-|---|---|---|
-| POST | `/api/auth/login` | Autenticação e emissão do token JWT |
-| GET/POST/PUT/DELETE | `/api/users` | CRUD de utilizadores |
-| GET/POST/PUT/DELETE | `/api/products` | CRUD de produtos |
-| GET | `/api/imposter/inventory/{sku}` | Consulta inventário via imposter (com cache) |
-| POST | `/api/imposter/payments` | Simula um pagamento via imposter |
+---
+
+## Endpoints
+
+| Método | Endpoint | Descrição |
+|---------|----------|-----------|
+| POST | /api/auth/login | Efetuar login |
+| GET | /api/users | Listar utilizadores |
+| POST | /api/users | Criar utilizador |
+| PUT | /api/users/{id} | Atualizar utilizador |
+| DELETE | /api/users/{id} | Remover utilizador |
+| GET | /api/products | Listar produtos |
+| POST | /api/products | Criar produto |
+| PUT | /api/products/{id} | Atualizar produto |
+| DELETE | /api/products/{id} | Remover produto |
+| GET | /api/imposter/inventory/{sku} | Consultar inventário |
+| POST | /api/imposter/payments | Simular pagamento |
+
+---
 
 ## Testes
 
-Coleção Postman disponível em `ApiMatheusProjetoFinal.postman_collection.json` — importar no Postman, correr primeiro o `Login` (guarda o token automaticamente numa variável de coleção) e depois os restantes pedidos.
+Foi incluída uma coleção do Postman com os pedidos necessários para testar a API.
 
-## Resiliência (Polly)
+Antes de testar os restantes endpoints, é necessário executar o pedido de login para obter o token JWT.
 
-- **Retry:** tentativas automáticas em caso de falha temporária ao contactar o imposter.
-- **Circuit breaker:** interrompe temporariamente as chamadas ao imposter após falhas consecutivas, evitando sobrecarga.
-- **Cache:** respostas de inventário são guardadas no Redis durante 30 segundos.
+---
+
+## Funcionalidades implementadas
+
+- Autenticação com JWT
+- CRUD de Utilizadores
+- CRUD de Produtos
+- Integração com Mountebank
+- Cache com Redis
+- Retry e Circuit Breaker com Polly
+- Documentação com Swagger
+- Docker Compose
+
+---
+
+## Autor
+
+Matheus Silva
+
+Projeto desenvolvido para avaliação da UFCD PI0924.
