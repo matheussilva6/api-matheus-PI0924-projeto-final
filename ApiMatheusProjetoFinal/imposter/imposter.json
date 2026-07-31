@@ -1,0 +1,71 @@
+{
+  "imposters": [
+    {
+      "port": 4545,
+      "protocol": "http",
+      "stubs": [
+        {
+          "predicates": [
+            {
+              "equals": {
+                "method": "GET",
+                "path": "/inventory/SKU123"
+              }
+            }
+          ],
+          "responses": [
+            {
+              "is": {
+                "statusCode": 200,
+                "headers": { "Content-Type": "application/json" },
+                "body": {
+                  "sku": "SKU123",
+                  "descricao": "Camisola de futebol",
+                  "quantidade": 42,
+                  "disponivel": true
+                }
+              }
+            }
+          ]
+        },
+        {
+          "predicates": [
+            {
+              "equals": {
+                "method": "POST",
+                "path": "/payments"
+              }
+            }
+          ],
+          "responses": [
+            {
+              "is": {
+                "statusCode": 201,
+                "headers": { "Content-Type": "application/json" },
+                "body": {
+                  "transacaoId": "TXN-000123",
+                  "estado": "aprovado",
+                  "valor": 49.99
+                }
+              }
+            }
+          ]
+        },
+        {
+          "responses": [
+            {
+              "is": {
+                "statusCode": 200,
+                "headers": { "Content-Type": "application/json" },
+                "body": {
+                  "mensagem": "Mountebank a funcionar com sucesso!",
+                  "status": "ativo"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

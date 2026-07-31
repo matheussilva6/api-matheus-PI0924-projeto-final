@@ -1,0 +1,162 @@
+{
+  "info": {
+    "name": "ApiMatheusProjetoFinal",
+    "description": "Coleção de testes para a API .NET 8 - JWT, Swagger, Polly (retry/circuit breaker), cache Redis e imposter (Mountebank).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8080" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.token) {",
+                  "    pm.collectionVariables.set('token', json.token);",
+                  "    pm.test('Token recebido', () => pm.expect(json.token).to.be.a('string'));",
+                  "} else {",
+                  "    pm.test('Login falhou', () => pm.expect.fail('Sem token na resposta'));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"matheus\",\n  \"password\": \"12345\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/auth/login", "host": ["{{base_url}}"], "path": ["api", "auth", "login"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Listar produtos",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "url": { "raw": "{{base_url}}/api/products", "host": ["{{base_url}}"], "path": ["api", "products"] }
+          }
+        },
+        {
+          "name": "Obter produto por Id",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "url": { "raw": "{{base_url}}/api/products/1", "host": ["{{base_url}}"], "path": ["api", "products", "1"] }
+          }
+        },
+        {
+          "name": "Criar produto",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Teclado Mecânico\",\n  \"price\": 79.90,\n  \"sku\": \"TEC-003\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/products", "host": ["{{base_url}}"], "path": ["api", "products"] }
+          }
+        },
+        {
+          "name": "Atualizar produto",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Teclado Mecânico RGB\",\n  \"price\": 89.90,\n  \"sku\": \"TEC-003\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/products/1", "host": ["{{base_url}}"], "path": ["api", "products", "1"] }
+          }
+        },
+        {
+          "name": "Eliminar produto",
+          "request": {
+            "method": "DELETE",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "url": { "raw": "{{base_url}}/api/products/2", "host": ["{{base_url}}"], "path": ["api", "products", "2"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Listar utilizadores",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "url": { "raw": "{{base_url}}/api/users", "host": ["{{base_url}}"], "path": ["api", "users"] }
+          }
+        },
+        {
+          "name": "Criar utilizador",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"joana\",\n  \"password\": \"senha123\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/users", "host": ["{{base_url}}"], "path": ["api", "users"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Imposter",
+      "item": [
+        {
+          "name": "Consultar inventário (SKU123)",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "url": { "raw": "{{base_url}}/api/imposter/inventory/SKU123", "host": ["{{base_url}}"], "path": ["api", "imposter", "inventory", "SKU123"] }
+          }
+        },
+        {
+          "name": "Criar pagamento",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"valor\": 49.99,\n  \"metodo\": \"cartao\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/imposter/payments", "host": ["{{base_url}}"], "path": ["api", "imposter", "payments"] }
+          }
+        }
+      ]
+    }
+  ]
+}

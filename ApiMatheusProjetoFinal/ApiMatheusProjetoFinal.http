@@ -1,0 +1,6 @@
+@ApiMatheusProjetoFinal_HostAddress = http://localhost:5236
+
+GET {{ApiMatheusProjetoFinal_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
