@@ -2,7 +2,7 @@
 
 ## Sobre o projeto
 
-Este projeto foi desenvolvido para o Projeto Final da UFCD PI0924.
+Este projeto foi desenvolvido para o Projeto Final da turma PI0924.
 
 O objetivo foi criar uma API REST em ASP.NET Core (.NET 8), permitindo gerir utilizadores e produtos, utilizando autenticação JWT, documentação com Swagger e integração com um serviço externo simulado através do Mountebank (Imposter).
 
